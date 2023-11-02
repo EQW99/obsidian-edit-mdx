@@ -1,46 +1,68 @@
-import {Plugin, normalizePath } from "obsidian";
+import {Plugin, normalizePath } from 'obsidian';
+import * as fs from "fs";
 
+export default class MdxTools extends Plugin {
 
-export default class GeminiEditor extends Plugin {
+	async onload() {
+		super.onload()
 
-	checkExists(filepath : string) {
-		const file = app.vault.getAbstractFileByPath(filepath);
-		if (file) {
-			return true
-		} else {
-			return false
-		}
+		this.registerExtensions(["mdx"], "markdown");
+		
+		this.addRibbonIcon('add-note-glyph', 'New .mdx file', (evt: MouseEvent) => {
+			this.createMDX()
+		});
+
+		this.registerEvent(
+			this.app.workspace.on("file-menu", (menu, file) => {
+				menu.addItem((item) => {
+					item
+					.setTitle("New .mdx file")
+					.setIcon("add-note-glyph")
+					.onClick(async () => {
+						let folder : string
+						const fname = file.path
+						if( fname.search("(\\.[^.]+)$") > 0 ) {
+							folder = file.parent.path
+						} else {
+							folder = fname
+						}
+						this.createMDX(folder)
+					});
+				});
+			})
+		);
+
 	}
 
-	createGMI(folder? : string) {
-		// const fm = app.fileManager as any
-		if ( !folder ) {
-			folder = app.fileManager.getNewFileParent(app.workspace.getActiveFile()?.path || '').path
-		}
-		// if (folder == "/") {
-		// 	folder = ""
-		// }
+	onunload() {
 
-		// const files = app.vault.getFiles()
-		// const filepaths : string[] = []
-		// files.forEach( (file) => {
-		// 	// new Notice(file.parent.path)
-		// 	// if ( file.parent.path == folder ) {
-		// 		filepaths.push(file.path)
-		// 		// new Notice(file.path)
-		// 	// }
-		// })
-		let filename = normalizePath(folder + "/Untitled.gmi")
+	}
+
+	checkExists(filepath : string) {
+		return app.vault.getAbstractFileByPath(filepath) && true;
+	}
+
+	// Create new MDX file
+	createMDX(folder? : string) {
+		if ( !folder ) {
+			folder = this.app.fileManager.getNewFileParent(app.workspace.getActiveFile()?.path || '').path
+		}
+		
+		let filename = normalizePath(folder + "/Untitled.mdx")
+		console.log(filename)
 
 		if (!this.checkExists(filename)) {
-			app.vault.create(filename, "")
-		} else {
+			console.log("no exist")
+			this.app.vault.create(filename, "")
+		} 
+		else { // If Untitled.mdx already exists, try Untitled 1.mdx etc
 			let iter = 0
+			console.log("else")
 			while (true) {
 				iter = iter + 1
-				let filename = normalizePath(folder + "/Untitled " + iter + ".gmi")
+				filename = normalizePath(folder + "/Untitled " + iter + ".mdx")
 				if (!this.checkExists(filename)) {
-					app.vault.create(filename, "")
+					this.app.vault.create(filename, "")
 					break
 				}
 			}
@@ -48,42 +70,5 @@ export default class GeminiEditor extends Plugin {
 
 
 	}
-
-	async onload() {
-		console.log('loading plugin: Gemini');
-
-		this.registerExtensions(["gmi"], "markdown");
-
-		this.addRibbonIcon('add-note-glyph', 'New Gemtext', (evt: MouseEvent) => {
-			this.createGMI()
-		});
-
-		this.registerEvent(
-			this.app.workspace.on("file-menu", (menu, file) => {
-			  menu.addItem((item) => {
-				item
-				  .setTitle("New Gemtext")
-				  .setIcon("add-note-glyph")
-				  .onClick(async () => {
-					  let folder : string
-					  const fname = file.path
-					  if( fname.search("(\\.[^.]+)$") > 0 ) {
-						folder = file.parent.path
-						// if (folder != "/") {
-						// 	folder = folder + "/"
-						// }
-					  } else {
-						folder = fname
-					  }
-					  this.createGMI(folder)
-				  });
-			  });
-			})
-		  );
-	}
-
-	onunload() {
-		console.log('unloading plugin: Gemini');
-	}
-
 }
+
