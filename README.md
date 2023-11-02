@@ -7,6 +7,8 @@ Features:
 - Ribbon button to create new .mdx file
 - Context-menu item to create new .mdx file
 
+Forked from https://github.com/Basil-Mori/obsidian-edit-gemini
+
 ### Compatibility
 The required APIs were added in Obsidian **0.11.0**, so that's the minimum required version.
 
