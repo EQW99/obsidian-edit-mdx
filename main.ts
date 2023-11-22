@@ -48,15 +48,12 @@ export default class MdxTools extends Plugin {
 		}
 		
 		let filename = normalizePath(folder + "/Untitled.mdx")
-		console.log(filename)
 
 		if (!this.checkExists(filename)) {
-			console.log("no exist")
 			this.app.vault.create(filename, "")
 		} 
 		else { // If Untitled.mdx already exists, try Untitled 1.mdx etc
 			let iter = 0
-			console.log("else")
 			while (true) {
 				iter = iter + 1
 				filename = normalizePath(folder + "/Untitled " + iter + ".mdx")
