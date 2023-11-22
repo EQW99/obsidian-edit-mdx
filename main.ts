@@ -38,7 +38,7 @@ export default class MdxTools extends Plugin {
 	}
 
 	checkExists(filepath : string) {
-		return app.vault.getAbstractFileByPath(filepath) && true;
+		return this.app.vault.getAbstractFileByPath(filepath) && true;
 	}
 
 	// Create new MDX file
