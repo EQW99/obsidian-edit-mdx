@@ -1,5 +1,4 @@
 import {Plugin, normalizePath } from 'obsidian';
-import * as fs from "fs";
 
 export default class MdxTools extends Plugin {
 
