@@ -20,7 +20,7 @@ export default class MdxTools extends Plugin {
 					.onClick(async () => {
 						let folder : string
 						const fname = file.path
-						if( fname.search("(\\.[^.]+)$") > 0 ) {
+						if( fname.search("(\\.[^.]+)$") > 0  && file.parent) {
 							folder = file.parent.path
 						} else {
 							folder = fname
@@ -44,7 +44,7 @@ export default class MdxTools extends Plugin {
 	// Create new MDX file
 	createMDX(folder? : string) {
 		if ( !folder ) {
-			folder = this.app.fileManager.getNewFileParent(app.workspace.getActiveFile()?.path || '').path
+			folder = this.app.fileManager.getNewFileParent(this.app.workspace.getActiveFile()?.path || '').path
 		}
 		
 		let filename = normalizePath(folder + "/Untitled.mdx")
